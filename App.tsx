@@ -1,10 +1,17 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Button, Alert } from 'react-native';
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
+      <Text>Press "Start" to register your focus time!</Text>
+      <Button 
+        title="Start"
+        onPress={() => Alert.alert(
+          "Ready, set, focus!",
+          "Focus time registration started! Enjoy the serenity."
+        )}
+        color="#00cc99" />
     </View>
   );
 }
