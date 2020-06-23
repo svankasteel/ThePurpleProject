@@ -5,7 +5,8 @@ import {
   View, 
   Button, 
   Alert, 
-  Dimensions
+  Dimensions,
+  TouchableHighlight
 } from 'react-native';
 import { LineChart } from "react-native-chart-kit";
 
@@ -13,16 +14,15 @@ export default function App() {
   return (
     <View style={styles.container}>
       <View style={styles.timer}>
-        <Text>Press "Start" to register your focus time!</Text>
-        <View style={styles.button}>
-          <Button
-            title="Start"
-            onPress={() => Alert.alert(
-              "Ready, set, focus!",
-              "Focus time registration started! Enjoy the serenity."
-            )}
-            color="#00cc99" />
-        </View>
+        <Text style={{color: "#fff"}}>Press "Start" to register your focus time!</Text>
+        <TouchableHighlight
+          style={styles.button}
+          onPress={() => Alert.alert(
+            "Ready, set, focus!",
+            "Focus time registration started! Enjoy the serenity."
+          )}>
+          <Text style={styles.buttonText}>Start</Text>
+        </TouchableHighlight>
       </View>
       <LineChart
         data={{
@@ -46,9 +46,9 @@ export default function App() {
         yAxisSuffix="H"
         yAxisInterval={1} // optional, defaults to 1
         chartConfig={{
-          backgroundColor: "#001278",
-          backgroundGradientFrom: "#001188",
-          backgroundGradientTo: "#0055DD",
+          backgroundColor: "#2f9090",
+          backgroundGradientFrom: "#2f9090",
+          backgroundGradientTo: "#2f9090",
           decimalPlaces: 1, // optional, defaults to 2dp
           color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
           labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
@@ -58,7 +58,7 @@ export default function App() {
           propsForDots: {
             r: "6",
             strokeWidth: "2",
-            stroke: "#005599"
+            stroke: "#006060"
           }
         }}
         bezier
@@ -70,7 +70,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#65C1C0',
     alignItems: 'center',
     justifyContent: 'center'
   },
@@ -79,11 +79,24 @@ const styles = StyleSheet.create({
     borderRadius: 8
   },
   timer: {
-    flex: 1,
+    width: 366,
+    padding: 24,
+    borderRadius: 8,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    backgroundColor: "#2f9090",
   },
   button: {
-    margin: 24
+    marginTop: 24,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    elevation: 2
+  },
+  buttonText: {
+    fontWeight: "bold",
+    textAlign: "center",
+    color: "#2f9090",
   }
 });
