@@ -72,6 +72,8 @@ class AppController {
     getData(): WeekData {
         const wd = this.dao.getData()
 
+        const firstDay = (new Date().getDay() + 1) % 7
+
         const labels: string[] = []
         const times: number[] = []
 
@@ -80,9 +82,12 @@ class AppController {
             times.push(value)
         })
 
+        const sortedLabels = labels.slice(firstDay, labels.length).concat(labels.slice(0,firstDay))
+        const sortedTimes = times.slice(firstDay, times.length).concat(times.slice(0,firstDay))
+
         return {
-            labels: labels,
-            datasets: [{data: times}]
+            labels: sortedLabels,
+            datasets: [{data: sortedTimes}]
         }
     }
 }

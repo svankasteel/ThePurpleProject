@@ -14,7 +14,7 @@ export class FocusTimeDAO {
         const day = session.startTime?.getDay()
         if (day === undefined) return
         
-        const hoursToAdd = session.getDuration() / (60*60*1000)
+        const hoursToAdd = session.getDuration() / (60 * 60 * 1000)
 
         const newVal = (this.registry.get(day) ?? 0) + hoursToAdd
 
