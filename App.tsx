@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   StyleSheet, 
   Text, 
@@ -8,17 +8,20 @@ import {
   TouchableHighlight
 } from 'react-native';
 import { LineChart } from "react-native-chart-kit";
-import Session from './data/Session';
 import AppController from './controller/AppController';
 
-export default function App() {
-  const controller: AppController = new AppController()
+const controller: AppController = new AppController()
 
-  var currentSession: Session
+export default function App() {
+  const [weekData, setWeekData] = useState(controller.getData())
+
+  function fetchData() {
+    setWeekData(controller.getData())
+  }
 
   function start() {
     try {
-      var time = controller.startTimer()
+      const time = controller.startTimer()
       Alert.alert(
         "Ready, set, focus!",
         `Focus time registration started at ${time}. Enjoy the serenity!`
@@ -33,12 +36,13 @@ export default function App() {
 
   function stop() {
     try {
-      const summary = controller.stop()
+      const summary = controller.stopTimer()
 
       Alert.alert(
         "Focus session ended",
         summary.render()
       )
+      fetchData()
     } catch (e) {
       Alert.alert(
         "Invalid action",
@@ -65,22 +69,7 @@ export default function App() {
         </View>
       </View>
       <LineChart
-        data={{
-          labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-          datasets: [
-            {
-              data: [
-                1 + Math.random() * 6,
-                1 + Math.random() * 6,
-                1 + Math.random() * 6,
-                1 + Math.random() * 6,
-                1 + Math.random() * 6,
-                2 + Math.random() * 6,
-                2 + Math.random() * 6
-              ]
-            }
-          ]
-        }}
+        data={weekData}
         width={Dimensions.get("window").width-48} // from react-native
         height={220}
         yAxisSuffix="H"

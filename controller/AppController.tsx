@@ -1,7 +1,10 @@
 import Session from "../data/Session"
+import WeekData from "../data/WeekData"
+import { FocusTimeDAO } from "../data/FocusTimeDAO"
 
-class SessionSummary {
-    session: Session
+export class SessionSummary {
+    private session: Session
+
     constructor(session: Session) {
         this.session = session
     }
@@ -11,7 +14,7 @@ class SessionSummary {
 
         const t = this.session.endTime
 
-        var timeFormat = ""
+        let timeFormat = ""
         const hours = Math.floor(this.session.getDuration() / (60 * 60 * 1000))
         const hRest = this.session.getDuration() % (60 * 60 * 1000)
         const minutes = Math.floor(hRest / (60 * 1000))
@@ -34,26 +37,75 @@ class SessionSummary {
 
 class AppController {
     private currentSession?: Session
+    private dao: FocusTimeDAO
+
+    constructor() {
+        this.dao = new FocusTimeDAO()
+    }
 
     startTimer(): string {
         if (this.currentSession?.isRunning()) {
             throw new Error("You already have a session running.")
         }
-        var t = new Date()
+        let t = new Date()
         this.currentSession = new Session()
         this.currentSession.start(t)
         return `${t.getHours()}:${t.getMinutes()}:${t.getSeconds()}`
     }
 
-    stop(): SessionSummary {
+    stopTimer(): SessionSummary {
         if (this.currentSession === undefined || !this.currentSession.isRunning()) {
-          throw new Error("You must start a session first.")
+            throw new Error("You must start a session first.")
         }
-        var t = new Date()
+        let t = new Date()
         this.currentSession.stop(t)
 
-        return new SessionSummary(this.currentSession)
-      }
+        this.dao.put(this.currentSession)
+
+        let result = new SessionSummary(this.currentSession)
+
+        this.currentSession = undefined
+
+        return result
+    }
+
+    getData(): WeekData {
+        const wd = this.dao.getData()
+
+        const labels: string[] = []
+        const times: number[] = []
+
+        wd.forEach ((value: number, key: number) => {
+            labels.push(renderWeekDay(key))
+            times.push(value)
+        })
+
+        return {
+            labels: labels,
+            datasets: [{data: times}]
+        }
+    }
+}
+
+function renderWeekDay(day: number): string {
+    const d = day % 7
+
+    switch (d) {
+        case 0:
+            return "Sun"
+        case 1:
+            return "Mon"
+        case 2:
+            return "Tue"
+        case 3:
+            return "Wed"
+        case 4:
+            return "Thu"
+        case 5:
+            return "Fri"
+        default:
+            return "Sat"
+    }
 }
 
 export default AppController
