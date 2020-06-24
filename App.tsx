@@ -9,59 +9,42 @@ import {
 } from 'react-native';
 import { LineChart } from "react-native-chart-kit";
 import Session from './data/Session';
+import AppController from './controller/AppController';
 
 export default function App() {
+  const controller: AppController = new AppController()
+
   var currentSession: Session
 
   function start() {
-    if (currentSession?.isRunning()) {
-      Alert.alert(
-        "Invalid action",
-        "You already have a session running."
-      )
-      return
-    }
-    var t = new Date()
-    currentSession = new Session()
-    currentSession.start(t)
+    try {
+      var time = controller.startTimer()
       Alert.alert(
         "Ready, set, focus!",
-        `Focus time registration started at ${t.getHours()}:${t.getMinutes()}:${t.getSeconds()}. Enjoy the serenity!`
+        `Focus time registration started at ${time}. Enjoy the serenity!`
       )
+    } catch (e) {
+      Alert.alert(
+        "Invalid action",
+        e.toString()
+      )
+    }
   }
 
   function stop() {
-    if (currentSession === undefined || !currentSession.isRunning()) {
+    try {
+      const summary = controller.stop()
+
+      Alert.alert(
+        "Focus session ended",
+        summary.render()
+      )
+    } catch (e) {
       Alert.alert(
         "Invalid action",
-        "You must start a session first."
+        e.toString()
       )
-      return
     }
-    var t = new Date()
-    currentSession.stop(t)
-
-    var timeFormat = ""
-    const hours = Math.floor(currentSession.getDuration() / (60 * 60 * 1000))
-    const hRest = currentSession.getDuration() % (60 * 60 * 1000)
-    const minutes = Math.floor(hRest / (60 * 1000))
-    const mRest = hRest % (60 * 1000)
-    const seconds = Math.floor(mRest / 1000)
-
-    if (hours > 0) {
-      timeFormat = timeFormat + `${hours} hours, `
-    }
-
-    if (minutes > 0) {
-      timeFormat = timeFormat + `${minutes} minutes, and `
-    }
-
-    timeFormat = timeFormat + `${seconds} seconds`
-
-    Alert.alert(
-      "Focus session ended",
-      `Your session ended at ${t.getHours()}:${t.getMinutes()}:${t.getSeconds()}. You enjoyed ${timeFormat} of serenity.`
-    )
   }
 
   return (
