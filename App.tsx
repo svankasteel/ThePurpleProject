@@ -14,14 +14,23 @@ const controller: AppController = new AppController()
 
 export default function App() {
   const [weekData, setWeekData] = useState(controller.getData())
+  const [isTracking, setTracking] = useState(false)
 
   function fetchData() {
     setWeekData(controller.getData())
   }
 
+  function getIntroText(): string {
+    if (isTracking) {
+      return "Press \"Stop\" to end focus time registration."
+    }
+    return "Press \"Start\" to begin focus time registration."
+  }
+
   function start() {
     try {
       const time = controller.startTimer()
+      setTracking(true)
       Alert.alert(
         "Ready, set, focus!",
         `Focus time registration started at ${time}. Enjoy the serenity!`
@@ -37,7 +46,7 @@ export default function App() {
   function stop() {
     try {
       const summary = controller.stopTimer()
-
+      setTracking(false)
       Alert.alert(
         "Focus session ended",
         summary.render()
@@ -54,7 +63,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <View style={styles.timer}>
-        <Text style={{color: "#fff"}}>Press "Start" to begin registering your focus time.</Text>
+        <Text style={{color: "#fff"}}>{ getIntroText() }</Text>
         <View style={{ marginTop: 24, flexDirection:"row" }}>
           <TouchableHighlight
             style={styles.button}
