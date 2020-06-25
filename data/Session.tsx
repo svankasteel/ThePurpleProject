@@ -4,6 +4,12 @@ class Session {
 
     start(time: Date) {
         this.startTime = time
+        
+        // These adjustments are made to make short time sessions an hour longer
+        let newTime = this.startTime.getTime()
+        newTime -= 60*60*1000
+
+        this.startTime.setTime(newTime)
     }
 
     stop(time: Date) {
