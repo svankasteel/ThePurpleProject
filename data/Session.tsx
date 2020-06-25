@@ -19,9 +19,14 @@ class Session {
     }
 
     getDuration(): number {
-        if (this.endTime === undefined || this.startTime === undefined) {
-            return -1
+        if (this.startTime === undefined) {
+            return 0
         }
+
+        if (this.endTime === undefined) {
+            return new Date().getTime() - this.startTime?.getTime()
+        }
+
         return this.endTime?.getTime() - this.startTime?.getTime()
     }
 }
